@@ -20,6 +20,25 @@
         tr.selected {
             background-color: #cce5ff;
         }
+        .dropdown-content {
+            display: none; /* Hidden by default */
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            max-height: 200px; /* Limit the height */
+            overflow-y: auto; /* Scroll if more items */
+        }
+        .dropdown-content div {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        th:hover .dropdown-content {
+            display: block; /* Show dropdown on hover */
+        }
+        .dropdown-content div:hover {
+            background-color: #f1f1f1;
+        }
     </style>
 </head>
 <body>
@@ -29,9 +48,12 @@
 <table id="data-table">
     <thead>
         <tr>
-            <th>Ukazatel</th>
+            <th>Plodina <div class="dropdown-content" id="plodinaDropdown"></div></th>                
+            <th>Rok <div class="dropdown-content" id="rokDropdown"></div></th>
+            <th>Ukazatel <div class="dropdown-content" id="ukazatelDropdown"></div></th>
             <th>User</th>
-            <th>Avg</th>
+            <th>Klima. reg.</th>
+            <th>ČR</th>
         </tr>
     </thead>
     <tbody>
