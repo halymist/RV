@@ -1,6 +1,7 @@
 // Define your data array here
 const dataArray = [
     ["Řepka", 2018,"Náklady celkem", 8, 14, 12], 
+    ["Řepka", 2018,"Výnos", 8, 14, 12], 
     ["Řepka", 2018,"Náklady pomocných činností", 6, 10, 11], 
     ["Řepka", 2018,"Druhotné mzdy", 5, 12, 12], 
     ["Řepka", 2018,"Hnojiva - nakupovaná", 10, 15, 13], 
@@ -16,6 +17,7 @@ const dataArray = [
     ["Řepka", 2018,"Správní režie", 9, 16, 15], 
     ["Řepka", 2018,"Tržby za výrobky", 11, 18, 17],
     ["Kukuřice", 2018,"Náklady celkem", 8, 14, 12], 
+    ["Kukuřice", 2018,"Výnos", 8, 14, 12], 
     ["Kukuřice", 2018,"Náklady pomocných činností", 6, 10, 11], 
     ["Kukuřice", 2018,"Druhotné mzdy", 5, 12, 12], 
     ["Kukuřice", 2018,"Hnojiva - nakupovaná", 10, 15, 13], 
@@ -28,13 +30,21 @@ function getDistinctValues(dataArray, columnIndex) {
     dataArray.forEach(row => {
         const value = row[columnIndex];
         if (!distinctValues[value]) {
-            distinctValues[value] = { value: value, selected: true };
+            if (columnIndex == 2) {
+                if (preselectedUkazatel.includes(value)) {
+                    distinctValues[value] = { value: value, selected: true };
+                } else {
+                    distinctValues[value] = { value: value, selected: false };
+                }
+            } else {
+                distinctValues[value] = { value: value, selected: true };
+            }
         }
     });
     return Object.values(distinctValues);
 }
 
-
+const preselectedUkazatel = ["Náklady celkem", "Výnos", "Tržby za výrobky"];
 // Get distinct values for each of the first three columns
 const distinctPlodina = getDistinctValues(dataArray, 0); // Column 1 (Plodina)
 const distinctRok = getDistinctValues(dataArray, 1); // Column 2 (Rok)
@@ -105,6 +115,7 @@ function populateDropdowns() {
             item.selected = checkbox.checked; // Update the selected state
             filteredArray = filterData();
             generateTable(filteredArray)
+            generateGraphs(filteredArray);
             console.log(filteredArray);
         });
         option.appendChild(checkbox);
@@ -150,11 +161,15 @@ function generateTable(filteredArray) {
     });
 }
 
+function generateGraphs(filteredArray) {
+    console.log(filteredArray)
+}
+
 populateDropdowns();
 
 let filteredArray = filterData();
-console.log(filteredArray);
 generateTable(filteredArray);
+generateGraphs(filteredArray);
 
 
 
