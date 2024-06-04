@@ -66,7 +66,6 @@ function populateDropdowns() {
 
     // Populate Plodina dropdown
     distinctPlodina.forEach(item => {
-        console.log(item)
         const option = document.createElement('div');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -74,8 +73,8 @@ function populateDropdowns() {
         checkbox.addEventListener('change', () => {
             item.selected = checkbox.checked; // Update the selected state
             filteredArray = filterData();
-            generateTable(filteredArray)
-            console.log(filteredArray);
+            generateTable(filteredArray);
+            generateGraphs(filteredArray);
         });
         option.appendChild(checkbox);
         const label = document.createElement('label'); // Create a label element
@@ -86,7 +85,6 @@ function populateDropdowns() {
 
     // Populate Rok dropdown
     distinctRok.forEach(item => {
-        console.log(item)
         const option = document.createElement('div');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -94,8 +92,8 @@ function populateDropdowns() {
         checkbox.addEventListener('change', () => {
             item.selected = checkbox.checked; // Update the selected state
             filteredArray = filterData();
-            generateTable(filteredArray)
-            console.log(filteredArray);
+            generateTable(filteredArray);
+            generateGraphs(filteredArray);
         });
         option.appendChild(checkbox);
         const label = document.createElement('label'); // Create a label element
@@ -106,7 +104,6 @@ function populateDropdowns() {
 
     // Populate Ukazatel dropdown
     distinctUkazatel.forEach(item => {
-        console.log(item)
         const option = document.createElement('div');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -116,7 +113,6 @@ function populateDropdowns() {
             filteredArray = filterData();
             generateTable(filteredArray)
             generateGraphs(filteredArray);
-            console.log(filteredArray);
         });
         option.appendChild(checkbox);
         const label = document.createElement('label'); // Create a label element
@@ -162,8 +158,111 @@ function generateTable(filteredArray) {
 }
 
 function generateGraphs(filteredArray) {
-    console.log(filteredArray)
+    const visualDiv = document.getElementById('visual');
+    visualDiv.innerHTML = ''; // Clear the existing content
+    const crops = {}; // To store data for each crop
+
+    // Process the filtered array to segregate data by crops
+    filteredArray.forEach(row => {
+        const crop = row[0]; // The crop name
+        const indicator = row[2]; // The indicator name
+        const values = row.slice(3); // The values
+
+        if (!crops[crop]) {
+            crops[crop] = [];
+        }
+
+        crops[crop].push([indicator, ...values]);
+    });
+
+    // Generate a bar graph for each crop
+    Object.keys(crops).forEach(crop => {
+        const ctx = document.createElement('canvas');
+        visualDiv.appendChild(ctx);
+        const labels = [];
+        const values = [];
+
+        crops[crop].forEach(row => {
+            const indicator = row[0];
+            const userValue = row[1];
+            const crValue = row[2];
+            const klimaValue = row[3];
+
+            labels.push(`user;${indicator}`);
+            values.push(userValue);
+            labels.push(`čr;${indicator}`);
+            values.push(crValue);
+            labels.push(`klima;${indicator}`);
+            values.push(klimaValue);
+        });
+        const h2FontSize = parseFloat(window.getComputedStyle(document.querySelector("h2")).fontSize);
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Values',
+                    data: values,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: crop,
+                        color: 'black', // Set the color of the title
+                        font: {
+                            size: h2FontSize // Set the font size of the title
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            callback: function(label, index, labels) {
+                                let realLabel = this.getLabelForValue(label);
+                                var subCategory = realLabel.split(";")[0];
+                                return subCategory;
+                            }
+                        }
+                    },
+                    xAxis2: {
+                        type: 'category',
+                        grid: {
+                            drawOnChartArea: false
+                        },
+                        ticks: {
+                            callback: function(label, index, labels) {
+                                let realLabel = this.getLabelForValue(label);
+                                var indicator = realLabel.split(";")[1];
+                                if (index % 3 === 1) {
+                                    return indicator;
+                                } else {
+                                    return '';
+                                }
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
 }
+
+const data = [
+    "Náklady celkem", 8, 14, 12,
+    "Výnos", 9, 13, 11,
+    "Tržby za výrobky", 11, 18, 17
+];
 
 populateDropdowns();
 

@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Data Visualization</title>
     <style>
+        h2 {
+            font-size: 25px;
+        }
         table {
             border-collapse: collapse;
             width: 100%;
@@ -38,6 +42,14 @@
         }
         .dropdown-content div:hover {
             background-color: #f1f1f1;
+        }
+        #visual {
+            flex-direction: column; /* Stack items vertically */
+            align-items: center; /* Center charts horizontally */
+            width: 70%;
+        }
+        canvas {
+            padding-top: 50px;
         }
     </style>
 </head>
